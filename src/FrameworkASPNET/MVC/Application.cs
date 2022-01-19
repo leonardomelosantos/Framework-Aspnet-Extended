@@ -39,7 +39,7 @@ namespace FrameworkAspNetExtended.MVC
 
                 Log.InfoFormat("Configuração automática: {0}.", configuration.GetType().FullName);
 
-                configuration.ExecutarConfiguracao();
+                configuration.RunConfiguration();
 
                 Log.InfoFormat("[{0}] Configuração automática: {1} concluída com sucesso.", watch.ElapsedMilliseconds, configuration.GetType().FullName);
 

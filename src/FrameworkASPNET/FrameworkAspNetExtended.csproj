@@ -131,7 +131,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuradores.cs" />
+    <Compile Include="Configurators.cs" />
     <Compile Include="Core\ApplicationSettings.cs" />
     <Compile Include="Core\IApplicationApiManagerCustomOperations.cs" />
     <Compile Include="Core\IApplicationManagerEvents.cs" />
@@ -148,10 +148,10 @@
     </Compile>
     <Compile Include="Entities\Pagination\PagedResult.cs" />
     <Compile Include="Entities\UserAutenticatedInfo.cs" />
-    <Compile Include="Interceptadores\InterceptorExtensionsSimpleInjector.cs" />
-    <Compile Include="Interceptadores\InvocationExtensionsSimpleInjector.cs" />
-    <Compile Include="Interceptadores\RepositoryInterceptor.cs" />
-    <Compile Include="Interceptadores\ServiceInterceptor.cs" />
+    <Compile Include="Interceptors\InterceptorExtensionsSimpleInjector.cs" />
+    <Compile Include="Interceptors\InvocationExtensionsSimpleInjector.cs" />
+    <Compile Include="Interceptors\RepositoryInterceptor.cs" />
+    <Compile Include="Interceptors\ServiceInterceptor.cs" />
     <Compile Include="Logger\LoggerUtil.cs" />
     <Compile Include="MVC\Application.cs" />
     <Compile Include="MVC\ApplicationApiWithSimpleInjector.cs" />
@@ -190,13 +190,13 @@
     <Compile Include="Services\Service.cs" />
     <Compile Include="Services\SaveLogAttribute.cs" />
     <Compile Include="Services\TransactionRequired.cs" />
-    <Compile Include="WebForms\Componentes\MyButton.cs" />
-    <Compile Include="WebForms\Componentes\MyGridView.cs" />
-    <Compile Include="WebForms\Componentes\MyImageButton.cs" />
-    <Compile Include="WebForms\Componentes\MyPage.cs">
+    <Compile Include="WebForms\Components\MyButton.cs" />
+    <Compile Include="WebForms\Components\MyGridView.cs" />
+    <Compile Include="WebForms\Components\MyImageButton.cs" />
+    <Compile Include="WebForms\Components\MyPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForms\Componentes\MyTextBox.cs" />
+    <Compile Include="WebForms\Components\MyTextBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

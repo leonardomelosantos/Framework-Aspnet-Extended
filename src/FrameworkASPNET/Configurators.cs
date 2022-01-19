@@ -8,6 +8,6 @@ namespace FrameworkAspNetExtended
 {
     public interface IConfigurable
     {
-        void ExecutarConfiguracao();
+        void RunConfiguration();
     }
 }
