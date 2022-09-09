@@ -22,6 +22,7 @@
 /packages/SimpleInjector.Integration.Web.Mvc.2.7.3
 /FrameworkASPNET/bin/Debug
 /.vs
+/src/.vs
 /FrameworkASPNET/obj
 /src/FrameworkASPNET/bin/Debug
 /src/FrameworkASPNET/obj
