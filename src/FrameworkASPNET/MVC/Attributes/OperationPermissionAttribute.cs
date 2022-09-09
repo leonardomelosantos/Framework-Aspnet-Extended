@@ -20,14 +20,13 @@ namespace FrameworkAspNetExtended.MVC.Attributes
 
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            MethodInfo methodInfo = ((ReflectedActionDescriptor)filterContext.ActionDescriptor).MethodInfo;
-
 			if (!(filterContext.Controller is Controllers.SimpleInjectorController))
 			{
 				return;
 			}
 
-			var operacoesExigidas = GetRequiredPermissionsFor<OperationPermissionAttribute>(methodInfo);
+            MethodInfo methodInfo = TryGetMethodInfo(filterContext);
+            var operacoesExigidas = GetRequiredPermissionsFor<OperationPermissionAttribute>(methodInfo);
 			if (operacoesExigidas == null || !operacoesExigidas.Any())
 			{
 				return;

@@ -5,11 +5,8 @@ using FrameworkAspNetExtended.Entities.Enums;
 using FrameworkAspNetExtended.Entities.Exceptions;
 using FrameworkAspNetExtended.MVC.Controllers;
 using log4net;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 
@@ -18,7 +15,7 @@ namespace FrameworkAspNetExtended.MVC.Attributes
     public class CustomHandlerErrorAttribute : HandleErrorAttribute
     {
         private readonly static ILog _log = LogManager.GetLogger(typeof(CustomHandlerErrorAttribute));
-        
+
         public const string ParamErrorViewName = "viewName";
         public const string ParamErrorModel = "model";
         public const string ParamErrorModelAction = "modelAction";
@@ -28,7 +25,7 @@ namespace FrameworkAspNetExtended.MVC.Attributes
         public override void OnException(ExceptionContext filterContext)
         {
             _log.Debug("CustomHandlerErrorAttribute.OnException()");
-            
+
             if (filterContext.Exception != null && !filterContext.ExceptionHandled)
             {
                 var applicationManagerEvents = ApplicationContext.ResolveWithSilentIfException<IApplicationManagerEvents>();
@@ -41,7 +38,7 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                 else if (ex != null && ex.InnerException is BusinessException)
                 {
                     HandleBusinessException(filterContext, ex.InnerException as BusinessException, applicationManagerEvents);
-                } 
+                }
                 else
                 {
                     if (filterContext.Controller is SimpleInjectorController)
@@ -52,8 +49,8 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                 }
             }
         }
-        
-        private void HandleBusinessException(ExceptionContext filterContext, 
+
+        private void HandleBusinessException(ExceptionContext filterContext,
             BusinessException businessException, IApplicationManagerEvents applicationManagerEvents)
         {
             if (applicationManagerEvents != null) applicationManagerEvents.BusinessException(businessException);
@@ -66,7 +63,7 @@ namespace FrameworkAspNetExtended.MVC.Attributes
         private void HandleExceptionView(ExceptionContext filterContext, IList<string> messages)
         {
             _log.Debug("CustomHandlerErrorAttribute.HandleExceptionView()");
-            
+
             var errors = filterContext.Controller.ViewData.ModelState.Values.SelectMany(v => v.Errors);
             foreach (ModelError error in errors)
             {
@@ -97,11 +94,11 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                 string actionName;
                 if (filterContext.Controller.TempData.ContainsKey(ParamErrorViewName))
                 {
-                    actionName = (string) filterContext.Controller.TempData[ParamErrorViewName];
+                    actionName = (string)filterContext.Controller.TempData[ParamErrorViewName];
                 }
                 else
                 {
-                    actionName = (string) filterContext.RouteData.Values["action"];
+                    actionName = (string)filterContext.RouteData.Values["action"];
                 }
 
                 var view = ViewEngines.Engines.FindView(filterContext.Controller.ControllerContext, actionName,
@@ -118,13 +115,13 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                         dynamic modelAction = filterContext.Controller.TempData[ParamErrorModelAction];
                         if (modelAction != null)
                         {
-							modelAction.Invoke(model);
+                            modelAction.Invoke(model);
                         }
                     }
                     filterContext.Controller.ViewData.Model = model;
                 }
-				
-				filterContext.Result = new ViewResult
+
+                filterContext.Result = new ViewResult
                 {
                     View = view,
                     MasterName = this.Master,

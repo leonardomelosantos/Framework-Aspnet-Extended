@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Web.Mvc;
+using System.Web.Mvc.Async;
 
 namespace FrameworkAspNetExtended.MVC.Attributes
 {
@@ -31,13 +33,31 @@ namespace FrameworkAspNetExtended.MVC.Attributes
 
         #endregion
 
-        protected static List<String> GetRequiredPermissionsFor<T>(MethodInfo methodInfo)
+        protected MethodInfo TryGetMethodInfo(ActionExecutingContext filterContext)
+        {
+            if (filterContext.ActionDescriptor is ReflectedActionDescriptor reflectedActionDescriptor)
+            {
+                return reflectedActionDescriptor.MethodInfo;
+            }
+            else if (filterContext.ActionDescriptor is TaskAsyncActionDescriptor taskAsyncActionDescriptor)
+            {
+                return taskAsyncActionDescriptor.TaskMethodInfo;
+            }
+            return null;
+        }
+
+
+        protected List<string> GetRequiredPermissionsFor<T>(MethodInfo methodInfo)
              where T : PermissionAttributeBase
         {
+            if (methodInfo == null)
+            {
+                return new List<string>();
+            }
             return GetStringListRequiredPermissionsFor(GetAllRequiredPermissionsFor<T>(methodInfo));
         }
 
-        private static List<String> GetStringListRequiredPermissionsFor<T>(
+        private List<String> GetStringListRequiredPermissionsFor<T>(
             IEnumerable<T> permissionsRequiredAttributes)
              where T : PermissionAttributeBase
         {
