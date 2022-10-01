@@ -1,24 +1,22 @@
-﻿using System.Data.Entity;
-using FrameworkAspNetExtended.Context;
+﻿using FrameworkAspNetExtended.Context;
 using FrameworkAspNetExtended.Core;
+using FrameworkAspNetExtended.Interceptadores;
+using FrameworkAspNetExtended.Reflection;
 using FrameworkAspNetExtended.Repositories;
 using FrameworkAspNetExtended.Services;
-using FrameworkDotNetExtended.Repositories;
-using log4net;
 using SimpleInjector;
 using SimpleInjector.Integration.Web.Mvc;
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using FrameworkAspNetExtended.Reflection;
-using FrameworkAspNetExtended.Interceptadores;
 
 namespace FrameworkAspNetExtended.MVC
 {
     public class ApplicationWithSimpleInjector : Application
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(ApplicationWithSimpleInjector));
+        // private static readonly ILog _log = LogManager.GetLogger(typeof(ApplicationWithSimpleInjector));
 
         public static void Initialize<T>(ApplicationSettings settings)
             where T : IApplicationManagerCustomOperations
@@ -28,7 +26,7 @@ namespace FrameworkAspNetExtended.MVC
             VerifyRegistrationsAndSetResolver(container);
         }
 
-        public static void Initialize<T1,T2>(ApplicationSettings settings) 
+        public static void Initialize<T1, T2>(ApplicationSettings settings)
             where T1 : IApplicationManagerCustomOperations
             where T2 : IApplicationManagerEvents
         {
@@ -89,7 +87,7 @@ namespace FrameworkAspNetExtended.MVC
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
         }
 
-        private static void RegistrarClasseManagerCustomOperations<T>(Container container) 
+        private static void RegistrarClasseManagerCustomOperations<T>(Container container)
             where T : IApplicationManagerCustomOperations
         {
             Type classType = typeof(T);
@@ -116,12 +114,12 @@ namespace FrameworkAspNetExtended.MVC
             foreach (Type classType in classTypes)
             {
                 var interfaceType = classType.GetInterfaces()
-                    .First(t => typeof (IRepositoryGeneric).IsAssignableFrom(t)
+                    .First(t => typeof(IRepositoryGeneric).IsAssignableFrom(t)
                                 && t.IsInterface
                                 && !t.FullName.StartsWith(ApplicationContext.PrefixNamespaceFramework));
 
                 IdentityDbContext(classType);
-                
+
                 container.RegisterSingle(interfaceType, classType);
                 container.InterceptWith<RepositoryInterceptor>(t => t == interfaceType);
             }
@@ -151,7 +149,7 @@ namespace FrameworkAspNetExtended.MVC
             foreach (Type classType in classTypes)
             {
                 var interfaceType = classType.GetInterfaces()
-                    .First(t => typeof (IService).IsAssignableFrom(t)
+                    .First(t => typeof(IService).IsAssignableFrom(t)
                                 && t.IsInterface
                                 && !t.FullName.StartsWith(ApplicationContext.PrefixNamespaceFramework));
 

@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -15,7 +13,7 @@ namespace FrameworkAspNetExtended.MVC.Controllers
 {
     [CustomHandlerError]
     public class ExtendedController : Controller, IControllerErrors
-	{
+    {
         public void PushErrorIntoModelState(string message)
         {
             ModelState.AddModelError("", message);
@@ -25,11 +23,11 @@ namespace FrameworkAspNetExtended.MVC.Controllers
         {
             get
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    return true;
+                    throw new BusinessException();
                 }
-                throw new BusinessException();
+                return true;
             }
         }
 

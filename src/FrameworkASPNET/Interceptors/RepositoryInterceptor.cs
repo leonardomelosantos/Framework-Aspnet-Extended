@@ -1,12 +1,11 @@
-﻿using System;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Reflection;
-using FrameworkAspNetExtended.Context;
+﻿using FrameworkAspNetExtended.Context;
 using FrameworkAspNetExtended.Core;
 using FrameworkAspNetExtended.Entities.Events;
 using FrameworkAspNetExtended.Services;
 using log4net;
+using System;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 
 namespace FrameworkAspNetExtended.Interceptadores
 {
@@ -30,9 +29,13 @@ namespace FrameworkAspNetExtended.Interceptadores
 
             CallBeforeRepositoryMethodExecute(applicationManagerEvents, eventInfo);
 
-			object[] saveLogAttributes = metodoConcreto.GetCustomAttributes(typeof(SaveLog), true);
+            object[] saveLogAttributes = new object[0];
+            if (metodoConcreto != null)
+            {
+                saveLogAttributes = metodoConcreto.GetCustomAttributes(typeof(SaveLog), true);
+            }
 
-			string mensagemLog = "Método do repositório executado.";
+            string mensagemLog = "Método do repositório executado.";
             DateTime tempoini = DateTime.Now;
             try
             {
@@ -41,7 +44,7 @@ namespace FrameworkAspNetExtended.Interceptadores
             catch (Exception ex)
             {
                 mensagemLog = "Erro ao executar método do repositório";
-				log.Error(string.Format("{0} {1}", mensagemLog, metodoConcreto.Name), ex);
+                log.Error(string.Format("{0} {1}", mensagemLog, metodoConcreto.Name), ex);
 
                 if (ex is DbUpdateConcurrencyException)
                 {
@@ -49,7 +52,10 @@ namespace FrameworkAspNetExtended.Interceptadores
                     {
                         if (applicationManagerEvents != null) applicationManagerEvents.ConcurrencyException(ex);
                     }
-                    catch (Exception) { }
+                    catch
+                    {
+                        // Fazer nada.
+                    }
                 }
                 else
                 {
@@ -57,13 +63,13 @@ namespace FrameworkAspNetExtended.Interceptadores
                 }
             }
 
-			TimeSpan tempoIntervalo = DateTime.Now.Subtract(tempoini);
-			if (saveLogAttributes.Any())
-			{
-				log.DebugFormat("{0} {1} tempo[{2}ms]", mensagemLog, metodoConcreto.Name, tempoIntervalo.TotalMilliseconds);
-			}
+            TimeSpan tempoIntervalo = DateTime.Now.Subtract(tempoini);
+            if (saveLogAttributes != null && saveLogAttributes.Any() && metodoConcreto != null)
+            {
+                log.DebugFormat("{0} {1} tempo[{2}ms]", mensagemLog, metodoConcreto.Name, tempoIntervalo.TotalMilliseconds);
+            }
 
-			CallBeforeRepositoryMethodExecute(applicationManagerEvents, eventInfo, tempoIntervalo);
+            CallBeforeRepositoryMethodExecute(applicationManagerEvents, eventInfo, tempoIntervalo);
         }
 
         private void CallBeforeRepositoryMethodExecute(IApplicationManagerEvents applicationManagerEvents,
@@ -77,7 +83,10 @@ namespace FrameworkAspNetExtended.Interceptadores
                     applicationManagerEvents.BeforeRepositoryMethodExecute(eventInfo);
                 }
             }
-            catch (Exception) { }
+            catch
+            {
+                // Fazer nada.
+            }
         }
 
         private void CallBeforeRepositoryMethodExecute(IApplicationManagerEvents applicationManagerEvents,
@@ -90,7 +99,10 @@ namespace FrameworkAspNetExtended.Interceptadores
                     applicationManagerEvents.BeforeRepositoryMethodExecute(eventInfo);
                 }
             }
-            catch (Exception) { }
+            catch
+            {
+                // Fazer nada.
+            }
         }
 
         protected virtual void ExecuteIntercept(IInvocation invocation)

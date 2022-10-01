@@ -2,7 +2,7 @@
 
 namespace FrameworkAspNetExtended.Entities.Exceptions
 {
-    public class DeletedEntityConcurrencyException : Exception
+    public sealed class DeletedEntityConcurrencyException : Exception
     {
     }
 }
