@@ -2,21 +2,19 @@
 using FrameworkAspNetExtended.Core;
 using FrameworkAspNetExtended.Entities;
 using FrameworkAspNetExtended.Entities.Enums;
-using FrameworkAspNetExtended.Entities.Exceptions;
 using FrameworkAspNetExtended.MVC.Attributes;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.Routing;
-using log4net;
 
 namespace FrameworkAspNetExtended.MVC.Controllers
 {
     [CustomHandlerError]
     public class SimpleInjectorController : AsyncController, IControllerErrors
-	{
+    {
         private readonly static ILog _log = LogManager.GetLogger(typeof(SimpleInjectorController));
 
         #region ModelState
@@ -98,7 +96,7 @@ namespace FrameworkAspNetExtended.MVC.Controllers
             else
             {
                 RegistrarLogNenhumaClasseAutenticacaoEncontrada();
-            }    
+            }
         }
 
         public bool IsAuthenticatedUser()
@@ -146,37 +144,37 @@ namespace FrameworkAspNetExtended.MVC.Controllers
             return new RedirectResult(url);
         }
 
-		public ActionResult HandleNotAuthenticatedUserAjax(string url)
-		{
-			return AjaxSuccessResult("Sessão expirada.", url);
-		}
-
-		/// <summary>
-		/// Chamado quando no "AuthenticatedAttribute" o resultado do método "IsAuthenticatedUser()" retorna false.
-		/// </summary>
-		/// <param name="controllerName"></param>
-		/// <param name="actionName"></param>
-		/// <returns></returns>
-		public ActionResult HandleNotAuthenticatedUser(string controllerName, string actionName)
+        /// <summary>
+        /// Chamado quando no "AuthenticatedAttribute" o resultado do método "IsAuthenticatedUser()" retorna false.
+        /// </summary>
+        /// <param name="controllerName"></param>
+        /// <param name="actionName"></param>
+        /// <returns></returns>
+        public ActionResult HandleNotAuthenticatedUser(string controllerName, string actionName)
         {
-			return new RedirectResult(Url.Action(actionName, controllerName));
+            return new RedirectResult(Url.Action(actionName, controllerName));
         }
 
-		public ActionResult HandleNotAuthenticatedUserAjax(string controllerName, string actionName)
-		{
-			return AjaxSuccessResult("Sessão expirada.", Url.Action(actionName, controllerName, null, this.Request.Url.Scheme));
-		}
+        public ActionResult HandleNotAuthenticatedUserAjax(string url)
+        {
+            return AjaxSuccessResult("Sessão expirada.", url);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		private void RegistrarLogNenhumaClasseAutenticacaoEncontrada()
+        public ActionResult HandleNotAuthenticatedUserAjax(string controllerName, string actionName)
+        {
+            return AjaxSuccessResult("Sessão expirada.", Url.Action(actionName, controllerName, null, this.Request.Url.Scheme));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void RegistrarLogNenhumaClasseAutenticacaoEncontrada()
         {
             _log.Debug(Mensagens.MSG_NENHUM_AUTENTICADOR);
         }
 
         #endregion
-        
+
         #region Funcionalidades para exibição de mensagens
 
         public void AddErrors(IList<string> messages)
@@ -302,11 +300,11 @@ namespace FrameworkAspNetExtended.MVC.Controllers
             TempData[CustomHandlerErrorAttribute.ParamErrorModelAction] = modelAction;
         }
 
-		#endregion
+        #endregion
 
-		#region Upload e download
+        #region Upload e download
 
-		[HttpPost]
+        [HttpPost]
         public ActionResult UploadFile(int? chunk, string name)
         {
             var fileUpload = Request.Files[0];

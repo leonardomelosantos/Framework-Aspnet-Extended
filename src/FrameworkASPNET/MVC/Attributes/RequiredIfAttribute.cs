@@ -6,7 +6,7 @@ namespace FrameworkAspNetExtended.MVC.Attributes
 {
     public class RequiredIfAttribute : ValidationAttribute, IClientValidatable
     {
-        private RequiredAttribute _innerAttribute = new RequiredAttribute();
+        private readonly RequiredAttribute _innerAttribute = new RequiredAttribute();
 
         public string DependentProperty { get; set; }
         public object TargetValue { get; set; }

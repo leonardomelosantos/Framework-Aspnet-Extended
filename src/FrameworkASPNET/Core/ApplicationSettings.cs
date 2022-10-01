@@ -7,12 +7,15 @@ namespace FrameworkAspNetExtended.Core
     /// </summary>
     public class ApplicationSettings
     {
-        public static ApplicationSettings Default = new ApplicationSettings()
+        public static ApplicationSettings Default()
         {
-            DependencyInjection = DependencyInjectionEngineType.SimpleInjector,
-            HasRepositoryGenericIoC = true,
-            HasServicePatternIoC = true
-        };
+            return new ApplicationSettings()
+            {
+                DependencyInjection = DependencyInjectionEngineType.SimpleInjector,
+                HasRepositoryGenericIoC = true,
+                HasServicePatternIoC = true
+            };
+        }
 
         public DependencyInjectionEngineType DependencyInjection { get; set; }
         public bool HasServicePatternIoC { get; set; }

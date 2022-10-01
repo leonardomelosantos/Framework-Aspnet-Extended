@@ -152,7 +152,6 @@
     <Compile Include="Interceptors\InvocationExtensionsSimpleInjector.cs" />
     <Compile Include="Interceptors\RepositoryInterceptor.cs" />
     <Compile Include="Interceptors\ServiceInterceptor.cs" />
-    <Compile Include="Logger\LoggerUtil.cs" />
     <Compile Include="MVC\Application.cs" />
     <Compile Include="MVC\ApplicationApiWithSimpleInjector.cs" />
     <Compile Include="MVC\ApplicationWithSimpleInjector.cs" />
@@ -190,13 +189,6 @@
     <Compile Include="Services\Service.cs" />
     <Compile Include="Services\SaveLogAttribute.cs" />
     <Compile Include="Services\TransactionRequired.cs" />
-    <Compile Include="WebForms\Components\MyButton.cs" />
-    <Compile Include="WebForms\Components\MyGridView.cs" />
-    <Compile Include="WebForms\Components\MyImageButton.cs" />
-    <Compile Include="WebForms\Components\MyPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForms\Components\MyTextBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

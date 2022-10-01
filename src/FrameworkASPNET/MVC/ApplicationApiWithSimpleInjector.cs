@@ -1,25 +1,22 @@
-﻿using System.Data.Entity;
-using FrameworkAspNetExtended.Context;
+﻿using FrameworkAspNetExtended.Context;
 using FrameworkAspNetExtended.Core;
+using FrameworkAspNetExtended.Interceptadores;
+using FrameworkAspNetExtended.Reflection;
 using FrameworkAspNetExtended.Repositories;
 using FrameworkAspNetExtended.Services;
-using FrameworkDotNetExtended.Repositories;
 using log4net;
 using SimpleInjector;
-//using SimpleInjector.Integration.Web.Mvc;
+using SimpleInjector.Integration.WebApi;
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using System.Web.Mvc;
-using FrameworkAspNetExtended.Reflection;
-using FrameworkAspNetExtended.Interceptadores;
 using System.Web.Http;
-using SimpleInjector.Integration.WebApi;
 
 namespace FrameworkAspNetExtended.WebAPI
 {
     public class ApplicationApiWithSimpleInjector : MVC.Application
-	{
+    {
         private static readonly ILog _log = LogManager.GetLogger(typeof(ApplicationApiWithSimpleInjector));
 
         public static void Initialize<T>(ApplicationSettings settings, HttpConfiguration httpConfiguration)
@@ -27,10 +24,10 @@ namespace FrameworkAspNetExtended.WebAPI
         {
             var container = InitializeBase<T>(settings, httpConfiguration);
 
-            VerifyRegistrationsAndSetResolver(container, httpConfiguration);
+            VerifyRegistrationsAndSetResolver(container);
         }
 
-        public static void Initialize<T1,T2>(ApplicationSettings settings, HttpConfiguration httpConfiguration) 
+        public static void Initialize<T1, T2>(ApplicationSettings settings, HttpConfiguration httpConfiguration)
             where T1 : IApplicationApiManagerCustomOperations
             where T2 : IApplicationManagerEvents
         {
@@ -38,11 +35,11 @@ namespace FrameworkAspNetExtended.WebAPI
 
             RegistrarClasseEventos<T2>(container);
 
-            VerifyRegistrationsAndSetResolver(container, httpConfiguration);
+            VerifyRegistrationsAndSetResolver(container);
         }
 
-        private static Container InitializeBase<T>(ApplicationSettings settings, HttpConfiguration httpConfiguration) 
-			where T : IApplicationApiManagerCustomOperations
+        private static Container InitializeBase<T>(ApplicationSettings settings, HttpConfiguration httpConfiguration)
+            where T : IApplicationApiManagerCustomOperations
         {
             ApplicationContext.DependencyInjection = Entities.Enums.DependencyInjectionEngineType.SimpleInjector;
             ApplicationContext.PrefixNameSpace = settings.PrefixNameSpace;
@@ -76,25 +73,23 @@ namespace FrameworkAspNetExtended.WebAPI
             RegistrarClasseManagerCustomOperations<T>(container);
 
             // IoC dos Controllers MVC
-			container.RegisterWebApiControllers(httpConfiguration, new Assembly[] { Assembly.GetExecutingAssembly() });
+            container.RegisterWebApiControllers(httpConfiguration, new Assembly[] { Assembly.GetExecutingAssembly() });
 
-			httpConfiguration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+            httpConfiguration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
 
-			// Registrando DatabaseContext por requisição web, a fim de trabalhar com transações de um ou mais bancos de dados.
-			container.RegisterPerWebRequest<DatabaseContext>();
+            // Registrando DatabaseContext por requisição web, a fim de trabalhar com transações de um ou mais bancos de dados.
+            container.RegisterPerWebRequest<DatabaseContext>();
 
             container.RegisterPerWebRequest<RequestContext>();
             return container;
         }
 
-        private static void VerifyRegistrationsAndSetResolver(Container container, HttpConfiguration httpConfiguration)
+        private static void VerifyRegistrationsAndSetResolver(Container container)
         {
             container.Verify();
-			
-			//DependencyResolver.SetResolver(httpConfiguration.DependencyResolver);
         }
 
-        private static void RegistrarClasseManagerCustomOperations<T>(Container container) 
+        private static void RegistrarClasseManagerCustomOperations<T>(Container container)
             where T : IApplicationApiManagerCustomOperations
         {
             Type classType = typeof(T);
@@ -121,12 +116,12 @@ namespace FrameworkAspNetExtended.WebAPI
             foreach (Type classType in classTypes)
             {
                 var interfaceType = classType.GetInterfaces()
-                    .First(t => typeof (IRepositoryGeneric).IsAssignableFrom(t)
+                    .First(t => typeof(IRepositoryGeneric).IsAssignableFrom(t)
                                 && t.IsInterface
                                 && !t.FullName.StartsWith(ApplicationContext.PrefixNamespaceFramework));
 
                 IdentityDbContext(classType);
-                
+
                 container.RegisterSingle(interfaceType, classType);
                 container.InterceptWith<RepositoryInterceptor>(t => t == interfaceType);
             }
@@ -156,7 +151,7 @@ namespace FrameworkAspNetExtended.WebAPI
             foreach (Type classType in classTypes)
             {
                 var interfaceType = classType.GetInterfaces()
-                    .First(t => typeof (IService).IsAssignableFrom(t)
+                    .First(t => typeof(IService).IsAssignableFrom(t)
                                 && t.IsInterface
                                 && !t.FullName.StartsWith(ApplicationContext.PrefixNamespaceFramework));
 

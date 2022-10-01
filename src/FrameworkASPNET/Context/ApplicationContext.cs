@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using FrameworkAspNetExtended.Entities.Enums;
+﻿using FrameworkAspNetExtended.Entities.Enums;
 using SimpleInjector;
+using System;
+using System.Collections.Generic;
 
 namespace FrameworkAspNetExtended.Context
 {
-    public class ApplicationContext
+    public static class ApplicationContext
     {
         public static string PrefixNameSpace;
-        public static string PrefixNamespaceFramework = "FrameworkAspNetExtended.";
+        public const string PrefixNamespaceFramework = "FrameworkAspNetExtended.";
 
         public static DependencyInjectionEngineType DependencyInjection { get; set; }
 
@@ -44,7 +44,7 @@ namespace FrameworkAspNetExtended.Context
             {
                 return ContainerSimpleInjector.GetInstance<T>();
             }
-            
+
             if (DependencyInjection == DependencyInjectionEngineType.WindsorCastle)
             {
                 return null;
@@ -60,7 +60,7 @@ namespace FrameworkAspNetExtended.Context
                 {
                     return ContainerSimpleInjector.GetInstance<T>();
                 }
-                
+
                 if (DependencyInjection == DependencyInjectionEngineType.WindsorCastle)
                 {
                     return null;

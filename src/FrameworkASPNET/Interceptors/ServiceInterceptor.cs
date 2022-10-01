@@ -1,16 +1,14 @@
-﻿using System;
+﻿using FrameworkAspNetExtended.Context;
+using FrameworkAspNetExtended.Core;
+using FrameworkAspNetExtended.Entities;
+using FrameworkAspNetExtended.Entities.Events;
+using FrameworkAspNetExtended.Services;
+using log4net;
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Reflection;
-using FrameworkAspNetExtended.Context;
-using FrameworkAspNetExtended.Core;
-using FrameworkAspNetExtended.Entities;
-using FrameworkAspNetExtended.Entities.Events;
-using FrameworkAspNetExtended.Logger;
-using FrameworkAspNetExtended.Services;
-using log4net;
 
 namespace FrameworkAspNetExtended.Interceptadores
 {
@@ -27,11 +25,11 @@ namespace FrameworkAspNetExtended.Interceptadores
                 MethodName = concreteMethod != null ? concreteMethod.Name : string.Empty
             };
             var applicationManagerEvents = ApplicationContext.ResolveWithSilentIfException<IApplicationManagerEvents>();
-            
+
             CallBeforeServiceMethodExecute(applicationManagerEvents, eventInfo);
 
             DateTime tempoini = DateTime.Now;
-            
+
             string mensagemLog = Mensagens.MSG_METODO_NEGOCIO_SUCESSO;
 
             // Resolvendo o DatabaseContext que é criado a cada requisição.
@@ -120,21 +118,19 @@ namespace FrameworkAspNetExtended.Interceptadores
                 }
             }
 
-            LoggerUtil.LoggarDebugCalculandoTempoFinal(log, mensagemLog, invocation.FullMethodName(), tempoini);
+            if (log.IsDebugEnabled)
+            {
+                TimeSpan tempoIntervaloAtual = DateTime.Now.Subtract(tempoini);
+                log.DebugFormat("{0} {1} tempo[{2}ms]", mensagemLog, invocation.FullMethodName(), tempoIntervaloAtual.TotalMilliseconds);
+            }
 
-            var tempoIntervalo = RegistrarTempoExecucaoMetodo(tempoini, mensagemLog, concreteMethod);
-
-            CallBeforeServiceMethodExecute(applicationManagerEvents, eventInfo, tempoIntervalo);
-        }
-
-        private TimeSpan RegistrarTempoExecucaoMetodo(DateTime tempoini, string mensagemLog, MethodBase concreteMethod)
-        {
             TimeSpan tempoIntervalo = DateTime.Now.Subtract(tempoini);
             if (log.IsDebugEnabled)
             {
                 log.DebugFormat("{0} {1} tempo[{2}ms]", mensagemLog, concreteMethod.Name, tempoIntervalo.TotalMilliseconds);
             }
-            return tempoIntervalo;
+
+            CallBeforeServiceMethodExecute(applicationManagerEvents, eventInfo, tempoIntervalo);
         }
 
         private void CallBeforeServiceMethodExecute(IApplicationManagerEvents applicationManagerEvents,
@@ -148,7 +144,10 @@ namespace FrameworkAspNetExtended.Interceptadores
                     applicationManagerEvents.BeforeServiceMethodExecute(eventInfo);
                 }
             }
-            catch (Exception) { }
+            catch
+            {
+                // Fazer nada.
+            }
         }
 
         private void CallBeforeServiceMethodExecute(IApplicationManagerEvents applicationManagerEvents,
@@ -161,7 +160,10 @@ namespace FrameworkAspNetExtended.Interceptadores
                     applicationManagerEvents.BeforeServiceMethodExecute(eventInfo);
                 }
             }
-            catch (Exception) { }
+            catch
+            {
+                // Fazer nada.
+            }
         }
     }
 }

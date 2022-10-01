@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using System.Web.Mvc.Async;
 
 namespace FrameworkAspNetExtended.MVC.Attributes
 {
@@ -43,9 +42,8 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                         perfisExigidos.ToArray(), new string[0]);
                 }
 
-                IList<string> perfisExigidosQueUsuarioNaoTem = new List<string>();
                 var perfisDoUsuario = user.Profiles;
-                perfisExigidosQueUsuarioNaoTem = perfisExigidos.Except(perfisDoUsuario).ToList();
+                IList<string> perfisExigidosQueUsuarioNaoTem = perfisExigidos.Except(perfisDoUsuario).ToList();
                 if ((perfisExigidos.Count > perfisExigidosQueUsuarioNaoTem.Count))
                 {
                     return;
@@ -66,7 +64,7 @@ namespace FrameworkAspNetExtended.MVC.Attributes
 
         public void OnActionExecuted(ActionExecutedContext filterContext)
         {
-
+            // Fazer nada.
         }
     }
 }
