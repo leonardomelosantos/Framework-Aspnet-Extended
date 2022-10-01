@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FrameworkAspNetExtended.Repositories
 {
@@ -44,7 +42,7 @@ namespace FrameworkAspNetExtended.Repositories
 
         int SaveChanges();
 
-        // TODO Delete vom filtro
+        // TODO Delete com filtro
         void Delete(Expression<Func<TEntity, bool>> filterExpression);
 
         //bool HasConcurrencyControl();

@@ -1,89 +1,75 @@
 ﻿using FrameworkAspNetExtended.Context;
 using FrameworkAspNetExtended.Core;
 using FrameworkAspNetExtended.Entities;
-using FrameworkAspNetExtended.Entities.Enums;
-using FrameworkAspNetExtended.Entities.Exceptions;
 using FrameworkAspNetExtended.MVC.Controllers;
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Filters;
-using System.Web.Script.Serialization;
 
 namespace FrameworkAspNetExtended.MVC.Attributes
 {
     public class CustomHandlerApiErrorAttribute : ExceptionFilterAttribute
-	{
+    {
         private readonly static ILog _log = LogManager.GetLogger(typeof(CustomHandlerApiErrorAttribute));
-        
-        /*public const string ParamErrorViewName = "viewName";
-        public const string ParamErrorModel = "model";
-        public const string ParamErrorModelAction = "modelAction";
 
-        public string CurrentView { get; set; }
-		*/
-
-		public override void OnException(HttpActionExecutedContext filterContext)
+        public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
             _log.Debug("CustomHandlerApiErrorAttribute.OnException()");
-            
-            if (filterContext.Exception != null)
+
+            if (actionExecutedContext.Exception != null)
             {
                 var applicationManagerEvents = ApplicationContext.ResolveWithSilentIfException<IApplicationManagerEvents>();
 
-                var ex = filterContext.Exception;
+                var ex = actionExecutedContext.Exception;
                 if (ex is BusinessException)
                 {
-                    HandleBusinessException(filterContext, ex as BusinessException, applicationManagerEvents);
+                    HandleBusinessException(ex as BusinessException, applicationManagerEvents);
                 }
                 else if (ex != null && ex.InnerException is BusinessException)
                 {
-                    HandleBusinessException(filterContext, ex.InnerException as BusinessException, applicationManagerEvents);
-                } 
+                    HandleBusinessException(ex.InnerException as BusinessException, applicationManagerEvents);
+                }
                 else
-				{
-					CallCustomEventAplication(filterContext, applicationManagerEvents, ex);
+                {
+                    CallCustomEventAplication(actionExecutedContext, applicationManagerEvents, ex);
 
-					var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
-					{
-						Content = new StringContent("Erro interno."),
-						ReasonPhrase = "Erro interno."
-					};
-					_log.Error(ex);
-					throw new HttpResponseException(resp);
-				}
-			}
+                    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("Erro interno."),
+                        ReasonPhrase = "Erro interno."
+                    };
+                    _log.Error(ex);
+                    throw new HttpResponseException(resp);
+                }
+            }
         }
 
-		private static void CallCustomEventAplication(HttpActionExecutedContext filterContext, IApplicationManagerEvents applicationManagerEvents, Exception ex)
-		{
-			if (filterContext.ActionContext.ControllerContext.Controller is SimpleInjectorApiController)
-			{
-				if (applicationManagerEvents != null) applicationManagerEvents.Exception(ex);
-			}
-		}
+        private static void CallCustomEventAplication(HttpActionExecutedContext filterContext, IApplicationManagerEvents applicationManagerEvents, Exception ex)
+        {
+            if (filterContext.ActionContext.ControllerContext.Controller is SimpleInjectorApiController)
+            {
+                if (applicationManagerEvents != null) applicationManagerEvents.Exception(ex);
+            }
+        }
 
-		private void HandleBusinessException(HttpActionExecutedContext filterContext, 
-            BusinessException businessException, IApplicationManagerEvents applicationManagerEvents)
+        private void HandleBusinessException(BusinessException businessException, IApplicationManagerEvents applicationManagerEvents)
         {
             if (applicationManagerEvents != null) applicationManagerEvents.BusinessException(businessException);
 
             IList<string> messages = businessException.Messages ?? new List<string> { businessException.Message };
 
-			var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
-			{
-				Content = new StringContent(businessException.Message),
-				ReasonPhrase = "Regra de negócio violada."
-			};
-			throw new HttpResponseException(resp);
-		}
-		/*
+            var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
+            {
+                Content = new StringContent(string.Join(", ", messages)),
+                ReasonPhrase = "Regra de negócio violada."
+            };
+            throw new HttpResponseException(resp);
+        }
+        /*
         private void HandleExceptionView(ExceptionContext filterContext, IList<string> messages)
         {
             _log.Debug("CustomHandlerErrorAttribute.HandleExceptionView()");

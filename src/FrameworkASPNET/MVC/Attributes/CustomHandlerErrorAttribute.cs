@@ -41,11 +41,11 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                 }
                 else
                 {
-                    if (filterContext.Controller is SimpleInjectorController)
+                    if (filterContext.Controller is SimpleInjectorController && applicationManagerEvents != null)
                     {
-                        if (applicationManagerEvents != null) applicationManagerEvents.Exception(ex);
+                        applicationManagerEvents.Exception(ex);
                     }
-                    new WebCustomErrorEvent(ex.Message, this, ex).Raise();
+                    new WebCustomErrorEvent(ex?.Message, this, ex).Raise();
                 }
             }
         }

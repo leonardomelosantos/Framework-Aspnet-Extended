@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace FrameworkAspNetExtended.Reflection
 {
-    public class ReflectionUtil
+    public static class ReflectionUtil
     {
         public static IEnumerable<Assembly> GetAssemblies()
         {
