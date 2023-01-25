@@ -7,6 +7,7 @@ using FrameworkAspNetExtended.Services;
 using SimpleInjector;
 using SimpleInjector.Integration.Web.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
@@ -39,13 +40,22 @@ namespace FrameworkAspNetExtended.MVC
 
         private static Container InitializeBase<T>(ApplicationSettings settings) where T : IApplicationManagerCustomOperations
         {
+            settings.Errors = new List<string>();
+
             ApplicationContext.DependencyInjection = Entities.Enums.DependencyInjectionEngineType.SimpleInjector;
             ApplicationContext.PrefixNameSpace = settings.PrefixNameSpace;
 
-            LoadAssemblies();
+            LoadAssemblies(settings);
 
-            ExecutarTodasConfiguracoesAutomaticas();
-
+            try
+            {
+                ExecutarTodasConfiguracoesAutomaticas(settings);
+            }
+            catch (Exception ex)
+            {
+                settings.Errors.Add(ex.Message + " " + ex.StackTrace);
+            }
+            
             ConfigurarLogger(settings);
 
             // Obtendo a instância do container do SimpleInjector.

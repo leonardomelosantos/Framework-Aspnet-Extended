@@ -120,6 +120,9 @@ namespace FrameworkAspNetExtended.Context
 			try
 			{
 				IList<DbContext> dbContexts = ApplicationContext.Resolve<DatabaseContext>().DbContexts;
+                if (dbContexts == null)
+                    return;
+
 				foreach (var dbContext in dbContexts)
 				{
 					try

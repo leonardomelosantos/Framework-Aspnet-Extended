@@ -1,4 +1,5 @@
 ﻿using FrameworkAspNetExtended.Entities.Enums;
+using System.Collections.Generic;
 
 namespace FrameworkAspNetExtended.Core
 {
@@ -13,7 +14,8 @@ namespace FrameworkAspNetExtended.Core
             {
                 DependencyInjection = DependencyInjectionEngineType.SimpleInjector,
                 HasRepositoryGenericIoC = true,
-                HasServicePatternIoC = true
+                HasServicePatternIoC = true,
+                Errors = new List<string>()
             };
         }
 
@@ -21,5 +23,6 @@ namespace FrameworkAspNetExtended.Core
         public bool HasServicePatternIoC { get; set; }
         public bool HasRepositoryGenericIoC { get; set; }
         public string PrefixNameSpace { get; set; }
+        public List<string> Errors { get; set; }
     }
 }

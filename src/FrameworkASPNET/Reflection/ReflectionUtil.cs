@@ -15,11 +15,40 @@ namespace FrameworkAspNetExtended.Reflection
                 .Where(a => a.FullName.StartsWith(ApplicationContext.PrefixNameSpace));
         }
 
-        public static IEnumerable<Type> GetTypesImplementInterface<TInterface>()
+        public static IEnumerable<Type> GetTypesImplementInterface<TInterface>(List<string> errors = null)
         {
-            return GetAssemblies()
-                .SelectMany(a => a.GetTypes()
-                    .Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract));
+            List<Type> result = new List<Type>();
+
+            IEnumerable<Assembly> assemblies = GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                try
+                {
+                    var allAssemblyTypes = assembly.GetTypes();
+
+                    var typesThatImplementsInterface = allAssemblyTypes.Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
+                    
+                    result.AddRange(typesThatImplementsInterface);
+                }
+                catch (ReflectionTypeLoadException rtlEx)
+                {
+                    
+                    if (errors != null && rtlEx.LoaderExceptions != null && rtlEx.LoaderExceptions.Any())
+                    {
+                        foreach (var exItem in rtlEx.LoaderExceptions)
+                        {
+                            errors.Add(exItem.Message + " " + exItem.StackTrace);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (errors != null)
+                        errors.Add(ex.Message + " " + ex.StackTrace);
+                }
+            }
+            return result;
+            //return assemblies.SelectMany(assembl => assembl.GetTypes().Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract));
         }
 
         public static IEnumerable<TInterface> GetInstanceImplementInterface<TInterface>()
