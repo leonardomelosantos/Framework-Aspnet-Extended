@@ -8,6 +8,7 @@ using log4net;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
@@ -41,12 +42,21 @@ namespace FrameworkAspNetExtended.WebAPI
         private static Container InitializeBase<T>(ApplicationSettings settings, HttpConfiguration httpConfiguration)
             where T : IApplicationApiManagerCustomOperations
         {
+            settings.Errors = new List<string>();
+
             ApplicationContext.DependencyInjection = Entities.Enums.DependencyInjectionEngineType.SimpleInjector;
             ApplicationContext.PrefixNameSpace = settings.PrefixNameSpace;
 
-            LoadAssemblies();
+            LoadAssemblies(settings);
 
-            ExecutarTodasConfiguracoesAutomaticas();
+            try
+            {
+                ExecutarTodasConfiguracoesAutomaticas(settings);
+            }
+            catch (Exception ex)
+            {
+                settings.Errors.Add(ex.Message + " " + ex.StackTrace);
+            }
 
             ConfigurarLogger(settings);
 

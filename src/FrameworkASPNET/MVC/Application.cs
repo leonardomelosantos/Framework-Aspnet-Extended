@@ -3,6 +3,7 @@ using FrameworkAspNetExtended.Core;
 using FrameworkAspNetExtended.Reflection;
 using log4net;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,29 +26,46 @@ namespace FrameworkAspNetExtended.MVC
             */
         }
 
-        protected static void ExecutarTodasConfiguracoesAutomaticas()
+        protected static void ExecutarTodasConfiguracoesAutomaticas(ApplicationSettings settings)
         {
+            List<string> assemblyErrors = new List<string>();
+
             // Obtendo todas as instâncias que implementam a interface 'IConfigurable'
-            var types = ReflectionUtil.GetTypesImplementInterface<IConfigurable>();
+            System.Collections.Generic.List<Type> types = 
+                ReflectionUtil.GetTypesImplementInterface<IConfigurable>(assemblyErrors).ToList();
+            
+            if (assemblyErrors.Any() && settings != null && settings.Errors != null)
+            {
+                settings.Errors.AddRange(assemblyErrors);
+            }
+
             foreach (Type type in types)
             {
-                ConstructorInfo ci = type.GetConstructor(Type.EmptyTypes);
+                try
+                {
+                    ConstructorInfo ci = type.GetConstructor(Type.EmptyTypes);
 
-                IConfigurable configuration = (IConfigurable)ci.Invoke(null);
+                    IConfigurable configuration = (IConfigurable)ci.Invoke(null);
 
-                Stopwatch watch = Stopwatch.StartNew();
+                    Stopwatch watch = Stopwatch.StartNew();
 
-                Log.InfoFormat("Configuração automática: {0}.", configuration.GetType().FullName);
+                    Log.InfoFormat("Configuração automática: {0}.", configuration.GetType().FullName);
 
-                configuration.RunConfiguration();
+                    configuration.RunConfiguration();
 
-                Log.InfoFormat("[{0}] Configuração automática: {1} concluída com sucesso.", watch.ElapsedMilliseconds, configuration.GetType().FullName);
+                    Log.InfoFormat("[{0}] Configuração automática: {1} concluída com sucesso.", watch.ElapsedMilliseconds, configuration.GetType().FullName);
 
-                watch.Stop();
+                    watch.Stop();
+                } 
+                catch (Exception ex)
+                {
+                    settings.Errors.Add(ex.Message + " - " + ex.StackTrace);
+                }
+                
             }
         }
 
-        protected static void LoadAssemblies()
+        protected static void LoadAssemblies(ApplicationSettings settings)
         {
             string privateBinPath = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath;
 
