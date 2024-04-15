@@ -4,7 +4,6 @@ using FrameworkAspNetExtended.Interceptadores;
 using FrameworkAspNetExtended.Reflection;
 using FrameworkAspNetExtended.Repositories;
 using FrameworkAspNetExtended.Services;
-using log4net;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using System;
@@ -18,8 +17,6 @@ namespace FrameworkAspNetExtended.WebAPI
 {
     public class ApplicationApiWithSimpleInjector : MVC.Application
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(ApplicationApiWithSimpleInjector));
-
         public static void Initialize<T>(ApplicationSettings settings, HttpConfiguration httpConfiguration)
             where T : IApplicationApiManagerCustomOperations
         {
@@ -49,19 +46,12 @@ namespace FrameworkAspNetExtended.WebAPI
 
             LoadAssemblies(settings);
 
-            try
-            {
-                ExecutarTodasConfiguracoesAutomaticas(settings);
-            }
-            catch (Exception ex)
-            {
-                settings.Errors.Add(ex.Message + " " + ex.StackTrace);
-            }
-
             ConfigurarLogger(settings);
 
             // Obtendo a instância do container do SimpleInjector.
             var container = ApplicationContext.ContainerSimpleInjector;
+
+            ExecutarTodasConfiguracoesAutomaticas(settings, container);
 
             // Registrando os interceptadores
             container.RegisterSingle<ServiceInterceptor>();

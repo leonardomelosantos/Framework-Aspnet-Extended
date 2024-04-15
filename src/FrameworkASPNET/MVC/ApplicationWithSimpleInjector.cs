@@ -47,19 +47,14 @@ namespace FrameworkAspNetExtended.MVC
 
             LoadAssemblies(settings);
 
-            try
-            {
-                ExecutarTodasConfiguracoesAutomaticas(settings);
-            }
-            catch (Exception ex)
-            {
-                settings.Errors.Add(ex.Message + " " + ex.StackTrace);
-            }
+            
 
             ConfigurarLogger(settings);
 
             // Obtendo a instância do container do SimpleInjector.
-            var container = ApplicationContext.ContainerSimpleInjector;
+            Container container = ApplicationContext.ContainerSimpleInjector;
+
+            ExecutarTodasConfiguracoesAutomaticas(settings, container);
 
             // Registrando os interceptadores
             container.RegisterSingle<ServiceInterceptor>();

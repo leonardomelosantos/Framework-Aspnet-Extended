@@ -1,9 +1,9 @@
-﻿namespace FrameworkAspNetExtended
+﻿using SimpleInjector;
+
+namespace FrameworkAspNetExtended
 {
     public interface IConfigurable
     {
-
-        void RunConfiguration();
-
+        void RunConfiguration(Container container);
     }
 }
