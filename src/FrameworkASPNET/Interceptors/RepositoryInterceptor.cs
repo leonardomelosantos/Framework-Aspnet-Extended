@@ -1,11 +1,14 @@
 ﻿using FrameworkAspNetExtended.Context;
 using FrameworkAspNetExtended.Core;
 using FrameworkAspNetExtended.Entities.Events;
+using FrameworkAspNetExtended.Repositories;
 using FrameworkAspNetExtended.Services;
 using log4net;
 using System;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace FrameworkAspNetExtended.Interceptadores
 {
@@ -29,11 +32,9 @@ namespace FrameworkAspNetExtended.Interceptadores
 
             CallBeforeRepositoryMethodExecute(applicationManagerEvents, eventInfo);
 
-            object[] saveLogAttributes = new object[0];
-            if (metodoConcreto != null)
-            {
-                saveLogAttributes = metodoConcreto.GetCustomAttributes(typeof(SaveLog), true);
-            }
+            object[] saveLogAttributes = GetSaveLogMethodAttibute(metodoConcreto);
+
+            HandleCutomOperationTimeoutAttibute(metodoConcreto, invocation);
 
             string mensagemLog = "Método do repositório executado.";
             DateTime tempoini = DateTime.Now;
@@ -44,13 +45,14 @@ namespace FrameworkAspNetExtended.Interceptadores
             catch (Exception ex)
             {
                 mensagemLog = "Erro ao executar método do repositório";
-                log.Error(string.Format("{0} {1}", mensagemLog, metodoConcreto.Name), ex);
+                log.ErrorFormat("{0} {1}", mensagemLog, metodoConcreto.Name, ex);
 
                 if (ex is DbUpdateConcurrencyException)
                 {
                     try
                     {
-                        if (applicationManagerEvents != null) applicationManagerEvents.ConcurrencyException(ex);
+                        if (applicationManagerEvents != null)
+                            applicationManagerEvents.ConcurrencyException(ex);
                     }
                     catch
                     {
@@ -70,6 +72,47 @@ namespace FrameworkAspNetExtended.Interceptadores
             }
 
             CallBeforeRepositoryMethodExecute(applicationManagerEvents, eventInfo, tempoIntervalo);
+        }
+
+        private void HandleCutomOperationTimeoutAttibute(MethodBase metodoConcreto, IInvocation invocation)
+        {
+            try
+            {
+                int customMinutesTimeout = 0;
+                if (metodoConcreto != null)
+                {
+                    System.Collections.Generic.IEnumerable<CustomCommandTimeoutAttribute> customTimeoutAttibute = metodoConcreto.GetCustomAttributes<CustomCommandTimeoutAttribute>(true);
+                    if (customTimeoutAttibute.Any())
+                    {
+                        customMinutesTimeout = customTimeoutAttibute.First().Seconds;
+                    }
+                }
+                if (customMinutesTimeout <= 0)
+                    return;
+
+                if (invocation != null && invocation.InvocationTarget is IRepositoryGeneric repositoryCaller
+                    && repositoryCaller.Context != null
+                    && repositoryCaller.Context.Database != null)
+                {
+                    repositoryCaller.Context.Database.CommandTimeout = customMinutesTimeout * 60;
+                    log.DebugFormat("Setou operation timeout customizado para {0} milisegundos.", repositoryCaller.Context.Database.CommandTimeout);
+                }
+            } 
+            catch (Exception ex)
+            {
+                log.Error("Erro ao setar operation timeout customizado.", ex);
+            }
+        }
+
+        private static object[] GetSaveLogMethodAttibute(MethodBase metodoConcreto)
+        {
+            object[] saveLogAttributes = new object[0];
+            if (metodoConcreto != null)
+            {
+                saveLogAttributes = metodoConcreto.GetCustomAttributes(typeof(SaveLog), true);
+            }
+
+            return saveLogAttributes;
         }
 
         private void CallBeforeRepositoryMethodExecute(IApplicationManagerEvents applicationManagerEvents,

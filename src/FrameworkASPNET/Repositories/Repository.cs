@@ -17,7 +17,7 @@ namespace FrameworkAspNetExtended.Repositories
             return null;
         }
 
-        protected DbContext Context
+        public DbContext Context
         {
             get
             {
