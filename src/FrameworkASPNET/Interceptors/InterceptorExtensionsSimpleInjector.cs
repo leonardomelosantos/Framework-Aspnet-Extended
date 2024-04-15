@@ -239,10 +239,8 @@ public static class Interceptor
 
         public override IMessage Invoke(IMessage msg)
         {
-            if (msg is IMethodCallMessage)
+            if (msg is IMethodCallMessage message)
             {
-                var message = (IMethodCallMessage)msg;
-
                 if (object.ReferenceEquals(message.MethodBase, GetTypeMethod))
                 {
                     return this.Bypass(message);

@@ -223,14 +223,16 @@ namespace FrameworkAspNetExtended.MVC.Controllers
             var buffer = new byte[fileUpload.InputStream.Length];
             fileUpload.InputStream.Read(buffer, 0, buffer.Length);
 
-            if (chunk == 0)
-            {
-                // FileTemp.CreateFileTemp(name, buffer);
-            }
-            else
-            {
-                // FileTemp.AppendFileTemp(name, buffer);
-            }
+            // TODO To be implemented
+            //if (chunk == 0)
+            //{
+            //    // FileTemp.CreateFileTemp(name, buffer);
+            //}
+            //else
+            //{
+            //    // FileTemp.AppendFileTemp(name, buffer);
+            //}
+
             return Content("chunk uploaded", "text/plain");
         }
 

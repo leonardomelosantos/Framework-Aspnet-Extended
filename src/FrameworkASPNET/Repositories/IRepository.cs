@@ -29,6 +29,8 @@ namespace FrameworkAspNetExtended.Repositories
 
         void Delete(IEnumerable<TEntity> entities);
 
+        void Delete(Expression<Func<TEntity, bool>> filterExpression);
+
         void LoadLazyPropertyFiltered<TElementNavProperty>(
             TEntity entity,
             Expression<Func<TEntity, ICollection<TElementNavProperty>>> navigationProperty,
@@ -41,12 +43,7 @@ namespace FrameworkAspNetExtended.Repositories
         void DeleteByKey(object key);
 
         int SaveChanges();
-
-        // TODO Delete com filtro
-        void Delete(Expression<Func<TEntity, bool>> filterExpression);
-
-        //bool HasConcurrencyControl();
-
+        
         Func<TEntity, object> GetVersionFieldSelectorForConcurrencyControl();
 
         int GetResultsByPage();
