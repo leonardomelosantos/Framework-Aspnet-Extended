@@ -185,6 +185,7 @@
       <DependentUpon>ResourcesFramework.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\AutoSaveChanges.cs" />
+    <Compile Include="Services\CustomCommandTimeoutAttribute.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\Service.cs" />
     <Compile Include="Services\SaveLogAttribute.cs" />
