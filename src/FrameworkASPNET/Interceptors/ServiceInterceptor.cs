@@ -61,25 +61,7 @@ namespace FrameworkAspNetExtended.Interceptadores
                             isolationLevel = transactionAttribute.IsolationLevel.Value;
                         }
 
-                        // Obtendo os DbContexts que foram usados à medida que os repositórios foram pedindo os respectivos DbContexts.
-                        if (databaseContext.DbContexts != null)
-                        {
-                            foreach (var dbContext in databaseContext.DbContexts)
-                            {
-                                // Obtendo as conexões de cada instância DbContext
-                                DbConnection connection = ((IObjectContextAdapter)dbContext).ObjectContext.Connection;
-                                if (!requestContext.HasTransactionByDbConnection(connection))
-                                {
-                                    if (connection.State != ConnectionState.Open)
-                                    {
-                                        connection.Open();
-                                    }
-
-                                    requestContext.AddTransaction(connection.BeginTransaction(isolationLevel));
-                                }
-                            }
-                            //allTransactionsStarted = true;
-                        }
+                        CreateDatabaseTransaction(databaseContext, requestContext, isolationLevel);
                     }
                 }
 
@@ -131,6 +113,36 @@ namespace FrameworkAspNetExtended.Interceptadores
             }
 
             CallBeforeServiceMethodExecute(applicationManagerEvents, eventInfo, tempoIntervalo);
+        }
+
+        /// <summary>
+        /// Obtendo os DbContexts que foram usados à medida que os repositórios foram pedindo os respectivos DbContexts.
+        /// </summary>
+        /// <param name="databaseContext"></param>
+        /// <param name="requestContext"></param>
+        /// <param name="isolationLevel"></param>
+        private static void CreateDatabaseTransaction(DatabaseContext databaseContext, RequestContext requestContext, IsolationLevel isolationLevel)
+        {
+            if (databaseContext.DbContexts != null)
+            {
+                foreach (var dbContext in databaseContext.DbContexts)
+                {
+                    // Obtendo as conexões de cada instância DbContext
+                    if (dbContext is IObjectContextAdapter objectContextAdapter && objectContextAdapter.ObjectContext != null)
+                    {
+                        DbConnection connection = objectContextAdapter.ObjectContext.Connection;
+                        if (!requestContext.HasTransactionByDbConnection(connection))
+                        {
+                            if (connection.State != ConnectionState.Open)
+                            {
+                                connection.Open();
+                            }
+                            requestContext.AddTransaction(connection.BeginTransaction(isolationLevel));
+                        }
+                    }
+
+                }
+            }
         }
 
         private void CallBeforeServiceMethodExecute(IApplicationManagerEvents applicationManagerEvents,

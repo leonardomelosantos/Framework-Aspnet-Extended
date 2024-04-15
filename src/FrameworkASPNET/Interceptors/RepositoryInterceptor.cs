@@ -44,13 +44,14 @@ namespace FrameworkAspNetExtended.Interceptadores
             catch (Exception ex)
             {
                 mensagemLog = "Erro ao executar método do repositório";
-                log.Error(string.Format("{0} {1}", mensagemLog, metodoConcreto.Name), ex);
+                log.ErrorFormat("{0} {1}", mensagemLog, metodoConcreto.Name, ex);
 
                 if (ex is DbUpdateConcurrencyException)
                 {
                     try
                     {
-                        if (applicationManagerEvents != null) applicationManagerEvents.ConcurrencyException(ex);
+                        if (applicationManagerEvents != null) 
+                            applicationManagerEvents.ConcurrencyException(ex);
                     }
                     catch
                     {
