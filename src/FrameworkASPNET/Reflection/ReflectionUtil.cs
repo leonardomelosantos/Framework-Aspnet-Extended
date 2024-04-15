@@ -48,7 +48,6 @@ namespace FrameworkAspNetExtended.Reflection
                 }
             }
             return result;
-            //return assemblies.SelectMany(assembl => assembl.GetTypes().Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract));
         }
 
         public static IEnumerable<TInterface> GetInstanceImplementInterface<TInterface>()

@@ -16,19 +16,6 @@ namespace FrameworkAspNetExtended.Context
 
         public int ControleQtdServicosExecutados { get; set; }
 
-        /*public bool TransactionStart
-        {
-            get
-            {
-                return Transaction != null;
-            }
-        }
-
-        public void Clean()
-        {
-            Transaction = null;
-        }*/
-
         public void AddTransaction(DbTransaction trans)
         {
             if (Transactions == null)
@@ -40,18 +27,9 @@ namespace FrameworkAspNetExtended.Context
 
         public void Clear()
         {
-            //base.Clear();
             ControleQtdServicosExecutados = 0;
-            //NomeServicoWcf = null;
-            //Exception = null;
-            //userTicket = null;
-            //ipAddressContext = null;
-            //cultureInfoContext = null;
             Transactions.ForEach(transaction => transaction.Dispose());
             Transactions.Clear();
-            //ConnectionsNamesWithTransaction.Clear();
-            //ConnectionNames.Clear();
-            //IsolationLevel = null;
         }
 
         /// <summary>
@@ -86,8 +64,6 @@ namespace FrameworkAspNetExtended.Context
             }
 
             Transactions.Clear();
-            //IsolationLevel = null;
-            //ConnectionsNamesWithTransaction.Clear();
         }
 
         /// <summary>
@@ -108,8 +84,6 @@ namespace FrameworkAspNetExtended.Context
                 transaction.Dispose();
             }
             Transactions.Clear();
-            //IsolationLevel = null;
-            //ConnectionsNamesWithTransaction.Clear();
         }
 
         internal void CloseConections()
