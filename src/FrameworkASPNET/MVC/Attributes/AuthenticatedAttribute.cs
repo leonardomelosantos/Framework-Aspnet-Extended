@@ -37,17 +37,17 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                 {
                     if (!string.IsNullOrWhiteSpace(this.UrlWhenUserNotAuthenticated))
                     {
-						if (filterContext.HttpContext.Request.IsAjaxRequest())
-						{
-							filterContext.Result = simpleInjectorController.
-								HandleNotAuthenticatedUserAjax(this.UrlWhenUserNotAuthenticated);
-						}
-						else
-						{
-							filterContext.Result = simpleInjectorController.
-								HandleNotAuthenticatedUser(this.UrlWhenUserNotAuthenticated);
-						}
-                        
+                        if (filterContext.HttpContext.Request.IsAjaxRequest())
+                        {
+                            filterContext.Result = simpleInjectorController.
+                                HandleNotAuthenticatedUserAjax(this.UrlWhenUserNotAuthenticated);
+                        }
+                        else
+                        {
+                            filterContext.Result = simpleInjectorController.
+                                HandleNotAuthenticatedUser(this.UrlWhenUserNotAuthenticated);
+                        }
+
                     }
                     else if (!string.IsNullOrWhiteSpace(ControllerWhenUserNotAuthenticated))
                     {
@@ -55,16 +55,16 @@ namespace FrameworkAspNetExtended.MVC.Attributes
                             ? "Index"
                             : ActionWhenUserNotAuthenticated;
 
-						if (filterContext.HttpContext.Request.IsAjaxRequest())
-						{
-							filterContext.Result = simpleInjectorController.
-								HandleNotAuthenticatedUserAjax(ControllerWhenUserNotAuthenticated, action);
-						}
-						else
-						{
-							filterContext.Result = simpleInjectorController.
-								HandleNotAuthenticatedUser(ControllerWhenUserNotAuthenticated, action);
-						}
+                        if (filterContext.HttpContext.Request.IsAjaxRequest())
+                        {
+                            filterContext.Result = simpleInjectorController.
+                                HandleNotAuthenticatedUserAjax(ControllerWhenUserNotAuthenticated, action);
+                        }
+                        else
+                        {
+                            filterContext.Result = simpleInjectorController.
+                                HandleNotAuthenticatedUser(ControllerWhenUserNotAuthenticated, action);
+                        }
                     }
                     else
                     {
@@ -76,7 +76,7 @@ namespace FrameworkAspNetExtended.MVC.Attributes
 
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
         {
-            
+
         }
     }
 }

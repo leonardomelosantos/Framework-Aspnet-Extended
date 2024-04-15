@@ -1,10 +1,10 @@
-﻿using System.Net.Http;
-using FrameworkAspNetExtended.Entities;
+﻿using FrameworkAspNetExtended.Entities;
+using System.Net.Http;
 
 namespace FrameworkAspNetExtended.Core
 {
     public interface IApplicationApiManagerCustomOperations
-	{
-		bool ValidateBasicAuthentication(UserAutenticatedInfo user, HttpRequestMessage request);
-	}
+    {
+        bool ValidateBasicAuthentication(UserAutenticatedInfo user, HttpRequestMessage request);
+    }
 }

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameworkAspNetExtended.Entities;
 using FrameworkAspNetExtended.Entities.Events;
-using FrameworkAspNetExtended.Entities;
 using FrameworkAspNetExtended.Entities.Exceptions;
+using System;
 
 namespace FrameworkAspNetExtended.Core
 {

@@ -55,7 +55,7 @@ namespace FrameworkAspNetExtended.MVC
             {
                 settings.Errors.Add(ex.Message + " " + ex.StackTrace);
             }
-            
+
             ConfigurarLogger(settings);
 
             // Obtendo a instância do container do SimpleInjector.

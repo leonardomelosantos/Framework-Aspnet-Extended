@@ -27,12 +27,12 @@ namespace FrameworkAspNetExtended.Reflection
                     var allAssemblyTypes = assembly.GetTypes();
 
                     var typesThatImplementsInterface = allAssemblyTypes.Where(t => typeof(TInterface).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
-                    
+
                     result.AddRange(typesThatImplementsInterface);
                 }
                 catch (ReflectionTypeLoadException rtlEx)
                 {
-                    
+
                     if (errors != null && rtlEx.LoaderExceptions != null && rtlEx.LoaderExceptions.Any())
                     {
                         foreach (var exItem in rtlEx.LoaderExceptions)

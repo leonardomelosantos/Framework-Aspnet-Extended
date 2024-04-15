@@ -17,16 +17,16 @@ namespace FrameworkAspNetExtended.Entities.Pagination
             this.CurrentPage = currentPage;
             this.PageSize = pageSize;
         }
-        
+
         [DataMember]
         public int PageSize { get; set; }
-        
+
         [DataMember]
         public IList<TEntity> List { get; set; }
-        
+
         [DataMember]
         public int TotalCount { get; set; }
-        
+
         [DataMember]
         public int CurrentPage { get; set; }
     }

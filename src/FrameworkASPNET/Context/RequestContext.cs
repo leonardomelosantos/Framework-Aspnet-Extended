@@ -5,9 +5,6 @@ using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Util;
 
 namespace FrameworkAspNetExtended.Context
 {
@@ -117,28 +114,28 @@ namespace FrameworkAspNetExtended.Context
 
         internal void CloseConections()
         {
-			try
-			{
-				IList<DbContext> dbContexts = ApplicationContext.Resolve<DatabaseContext>().DbContexts;
+            try
+            {
+                IList<DbContext> dbContexts = ApplicationContext.Resolve<DatabaseContext>().DbContexts;
                 if (dbContexts == null)
                     return;
 
-				foreach (var dbContext in dbContexts)
-				{
-					try
-					{
-						dbContext.Database.Connection.Close();
-					}
-					catch (Exception ex)
-					{
-						log.Error(ex);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				log.Error(ex);
-			}
+                foreach (var dbContext in dbContexts)
+                {
+                    try
+                    {
+                        dbContext.Database.Connection.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error(ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
         }
 
         internal bool HasTransactionByDbConnection(DbConnection connection)
