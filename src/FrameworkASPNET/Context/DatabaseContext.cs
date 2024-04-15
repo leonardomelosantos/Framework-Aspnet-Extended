@@ -14,7 +14,7 @@ namespace FrameworkAspNetExtended.Context
             {
                 DbContexts = new List<DbContext>();
             }
-            
+
             // Obtendo todos os possíveis tipos de DbContext informados no ApplicationContext e instanciando um a um.
             if (ApplicationContext.AllPossibleDbContextTypes != null)
             {

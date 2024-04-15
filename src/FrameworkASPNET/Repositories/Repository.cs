@@ -1,12 +1,12 @@
-﻿using System.Data.Entity.Infrastructure;
-using System.Linq.Expressions;
-using FrameworkAspNetExtended.Context;
+﻿using FrameworkAspNetExtended.Context;
+using FrameworkAspNetExtended.Entities.Exceptions;
+using FrameworkAspNetExtended.Entities.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
-using FrameworkAspNetExtended.Entities.Exceptions;
-using FrameworkAspNetExtended.Entities.Pagination;
+using System.Linq.Expressions;
 
 namespace FrameworkAspNetExtended.Repositories
 {
@@ -32,7 +32,7 @@ namespace FrameworkAspNetExtended.Repositories
                 return Context.Set<TEntity>();
             }
         }
-        
+
         public virtual int Count()
         {
             return this.EntitySet.Count();
@@ -127,7 +127,7 @@ namespace FrameworkAspNetExtended.Repositories
                 this.Context.SaveChanges();
             }
         }
-        
+
         public virtual void Add(params TEntity[] entities)
         {
             this.Add(entities.ToList());
@@ -173,7 +173,7 @@ namespace FrameworkAspNetExtended.Repositories
                 .Where(filter)
                 .Load();
         }
-        
+
         /// <summary>
         /// Carrega (realiza query) de uma propriedade "LazyLoad" de uma entidade, aplicando um filtro de carregamento.
         /// </summary>

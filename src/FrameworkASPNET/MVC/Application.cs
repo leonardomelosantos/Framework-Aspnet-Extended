@@ -31,9 +31,9 @@ namespace FrameworkAspNetExtended.MVC
             List<string> assemblyErrors = new List<string>();
 
             // Obtendo todas as instâncias que implementam a interface 'IConfigurable'
-            System.Collections.Generic.List<Type> types = 
+            System.Collections.Generic.List<Type> types =
                 ReflectionUtil.GetTypesImplementInterface<IConfigurable>(assemblyErrors).ToList();
-            
+
             if (assemblyErrors.Any() && settings != null && settings.Errors != null)
             {
                 settings.Errors.AddRange(assemblyErrors);
@@ -56,12 +56,12 @@ namespace FrameworkAspNetExtended.MVC
                     Log.InfoFormat("[{0}] Configuração automática: {1} concluída com sucesso.", watch.ElapsedMilliseconds, configuration.GetType().FullName);
 
                     watch.Stop();
-                } 
+                }
                 catch (Exception ex)
                 {
                     settings.Errors.Add(ex.Message + " - " + ex.StackTrace);
                 }
-                
+
             }
         }
 
