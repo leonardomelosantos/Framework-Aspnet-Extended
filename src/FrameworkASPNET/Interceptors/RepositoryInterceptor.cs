@@ -79,7 +79,6 @@ namespace FrameworkAspNetExtended.Interceptadores
             try
             {
                 int customMinutesTimeout = 0;
-                //object[] customTimeoutAttibute = new object[0];
                 if (metodoConcreto != null)
                 {
                     System.Collections.Generic.IEnumerable<CustomCommandTimeoutAttribute> customTimeoutAttibute = metodoConcreto.GetCustomAttributes<CustomCommandTimeoutAttribute>(true);
@@ -96,6 +95,7 @@ namespace FrameworkAspNetExtended.Interceptadores
                     && repositoryCaller.Context.Database != null)
                 {
                     repositoryCaller.Context.Database.CommandTimeout = customMinutesTimeout * 60;
+                    log.DebugFormat("Setou operation timeout customizado para {0} milisegundos.", repositoryCaller.Context.Database.CommandTimeout);
                 }
             } 
             catch (Exception ex)
