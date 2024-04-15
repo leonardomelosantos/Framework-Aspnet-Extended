@@ -17,8 +17,6 @@ namespace FrameworkAspNetExtended.MVC
 {
     public class ApplicationWithSimpleInjector : Application
     {
-        // private static readonly ILog _log = LogManager.GetLogger(typeof(ApplicationWithSimpleInjector));
-
         public static void Initialize<T>(ApplicationSettings settings)
             where T : IApplicationManagerCustomOperations
         {
@@ -46,8 +44,6 @@ namespace FrameworkAspNetExtended.MVC
             ApplicationContext.PrefixNameSpace = settings.PrefixNameSpace;
 
             LoadAssemblies(settings);
-
-            
 
             ConfigurarLogger(settings);
 
