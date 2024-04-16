@@ -95,12 +95,14 @@ namespace FrameworkAspNetExtended.Interceptadores
                     && repositoryCaller.Context.Database != null)
                 {
                     repositoryCaller.Context.Database.CommandTimeout = customMinutesTimeout * 60;
-                    log.DebugFormat("Setou operation timeout customizado para {0} milisegundos.", repositoryCaller.Context.Database.CommandTimeout);
+                    log.DebugFormat("Setou operation timeout customizado para {0} segundos. Método '{1}'", 
+                        repositoryCaller.Context.Database.CommandTimeout,
+                        metodoConcreto.Name);
                 }
             } 
             catch (Exception ex)
             {
-                log.Error("Erro ao setar operation timeout customizado.", ex);
+                log.ErrorFormat("Erro ao setar operation timeout customizado. Método '{0}'.", metodoConcreto.Name, ex);
             }
         }
 
